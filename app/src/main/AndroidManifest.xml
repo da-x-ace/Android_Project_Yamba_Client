@@ -29,6 +29,19 @@
             android:name=".YambaTimeline"
             android:exported="false" >
         </service>
+        <provider
+            android:authorities="com.thenewcircle.yamba.provider"
+            android:name=".TimelineProvider"
+            android:enabled="true"
+            android:exported="true">
+        </provider>
+        <receiver android:name=".OnBoot">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
+
     </application>
 
 </manifest>
