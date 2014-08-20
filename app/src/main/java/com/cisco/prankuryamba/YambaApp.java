@@ -1,6 +1,9 @@
 package com.cisco.prankuryamba;
 
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -10,30 +13,58 @@ import com.marakana.android.yamba.clientlib.YambaClient;
 /**
  * Created by prankurgupta on 8/19/14.
  */
-public class YambaApp extends Application {
+public class YambaApp extends Application implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = "prankgup.yamba." + YambaApp.class.getSimpleName();
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
+    public static final String INTERVAL = "interval";
+
     private YambaClient yambaClient;
     private static YambaApp instance;
+    private PendingIntent refreshPendingIntent;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "onCreate");
         instance = this;
+        setupTimer();
+    }
+
+    private void setupTimer() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        Long interval = Long.valueOf(prefs.getString(INTERVAL, "0"));
+
+        Log.d(TAG, "setupTimer "+ interval);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        if (refreshPendingIntent != null){
+            alarmManager.cancel(refreshPendingIntent);
+            refreshPendingIntent = null;
+        }
+        if (interval > 0){
+            Intent refreshIntent = new Intent(this, YambaTimeline.class);
+            refreshPendingIntent = PendingIntent.getService(this, 0, refreshIntent, 0);
+            alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 0,
+                                             interval, refreshPendingIntent);
+            //                    AlarmManager.INTERVAL_FIFTEEN_MINUTES, refreshPendingIntent);
+        }
+
     }
 
     public YambaClient getYambaClient(){
         if (yambaClient == null){
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            String username = prefs.getString("username", null);
-            String password = prefs.getString("password", null);
+            String username = prefs.getString(USERNAME, null);
+            String password = prefs.getString(PASSWORD, null);
             if (username == null || password == null ||
                     username.length() == 0 || password.length() == 0){
                 Log.e(TAG, "No username or Password set");
                 return null;
             }
             yambaClient = new YambaClient(username, password);
+            prefs.registerOnSharedPreferenceChangeListener(this);
         }
         return yambaClient;
     }
@@ -41,5 +72,16 @@ public class YambaApp extends Application {
     
     public static YambaApp getInstance(){
         return instance;
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Log.d(TAG, "onSharedPreferenceChanged" + key);
+        if (key.equals(USERNAME) || key.equals(PASSWORD)){
+            yambaClient = null;
+        }
+        if (key.equals(INTERVAL)){
+            setupTimer();
+        }
     }
 }
