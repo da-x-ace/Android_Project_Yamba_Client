@@ -29,6 +29,8 @@
             android:name=".YambaTimeline"
             android:exported="false" >
         </service>
+        <!-- exported = true, any other app can access this database
+             else use android:permissions to give permissions to apps-->
         <provider
             android:authorities="com.thenewcircle.yamba.provider"
             android:name=".TimelineProvider"

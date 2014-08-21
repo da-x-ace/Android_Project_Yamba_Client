@@ -14,6 +14,7 @@ import static com.cisco.prankuryamba.TimelineContract.Columns.*;
  */
 public class TimelineHelper extends SQLiteOpenHelper{
 
+    /* We create/upgrade the sql schema here. */
     private static final String TAG = "prankgup.yamba." + TimelineHelper.class.getSimpleName();
     public static final String TABLE = "timeline";
     public static final int VERSION = 1;
