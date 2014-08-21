@@ -5,16 +5,23 @@ package com.cisco.prankuryamba;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.provider.Settings;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 
 /**
@@ -34,11 +41,31 @@ public class TimelineFragment extends ListFragment implements LoaderManager.Load
     };
     private static final String TAG = "prankgup.yamba." + TimelineFragment.class.getSimpleName();
     private SimpleCursorAdapter adapter;
+    private SimpleCursorAdapter.ViewBinder rowViewBinder = new SimpleCursorAdapter.ViewBinder() {
+        @Override
+        public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+            if (view.getId() == R.id.textViewTime){
+                Long time = cursor.getLong(columnIndex);
+                CharSequence friendlyTime = DateUtils.getRelativeTimeSpanString(time,
+                                            System.currentTimeMillis(), 0);
+                TextView textView = (TextView) view;
+                textView.setText(friendlyTime);
+                return  true;
+            }
+            return false;
+        }
+    };
 
     public TimelineFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //If you don't mention it The OptionsMenu wont be displayed
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,6 +86,7 @@ public class TimelineFragment extends ListFragment implements LoaderManager.Load
         adapter = new SimpleCursorAdapter(getActivity(), R.layout.friend_status, null, FROM, TO,
                                           CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         setListAdapter(adapter);
+        adapter.setViewBinder(rowViewBinder);
         //Here ID of the loader changes with different loader.
         //We have only 1 loader so use statically define it as 0
         getLoaderManager().initLoader(0, null, this);
@@ -81,5 +109,21 @@ public class TimelineFragment extends ListFragment implements LoaderManager.Load
     @Override
     public void onLoaderReset(Loader loader) {
         adapter.swapCursor(null);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.timeline, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.refresh:
+                Intent refreshIntent = new Intent(getActivity(), YambaTimeline.class);
+                getActivity().startService(refreshIntent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

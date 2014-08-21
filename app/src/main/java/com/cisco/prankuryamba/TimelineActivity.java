@@ -3,13 +3,14 @@ package com.cisco.prankuryamba;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.cisco.prankuryamba.R;
 
-public class TimelineActivity extends Activity {
+public class TimelineActivity extends BaseYambaActivity {
 
 
     private static final String TAG = "prankgup.yamba." + TimelineActivity.class.getSimpleName();
@@ -27,8 +28,8 @@ public class TimelineActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.timeline, menu);
-        return true;
+        getMenuInflater().inflate(R.menu.timeline_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -37,8 +38,11 @@ public class TimelineActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.showPost:
+                Intent statusIntent = new Intent(this, statusYamba.class);
+                startActivity(statusIntent);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

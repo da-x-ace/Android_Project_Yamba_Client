@@ -2,13 +2,11 @@ package com.cisco.prankuryamba;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.backup.SharedPreferencesBackupHelper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,11 +21,8 @@ import android.widget.TextView;
 import com.marakana.android.yamba.clientlib.YambaClient;
 import com.marakana.android.yamba.clientlib.YambaClientException;
 
-import java.util.Map;
-import java.util.Set;
 
-
-public class statusYamba extends Activity implements TextWatcher {
+public class statusYamba extends BaseYambaActivity implements TextWatcher {
 
     private static final String TAG = "prankgup.yamba." + statusYamba.class.getSimpleName();
     private static final int NUM_CHARACTER_ALLOWED = 140;
@@ -131,33 +126,6 @@ public class statusYamba extends Activity implements TextWatcher {
         super.onDestroy();
         Log.d(TAG, "onDestroy");
 
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.status_yamba, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        switch (id){
-            case R.id.action_settings:
-                Intent settingsActivityIntent = new Intent(this, SettingsActivity.class);
-                startActivity(settingsActivityIntent);
-                return true;
-            case R.id.refresh:
-                Intent refreshIntent = new Intent(this, YambaTimeline.class);
-                startService(refreshIntent);
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

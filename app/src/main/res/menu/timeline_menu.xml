@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.cisco.prankuryamba.TimelineActivity >
+
+    <item android:title="Post"
+        android:id="@+id/showPost"
+        android:showAsAction="always" />
+</menu>

@@ -2,10 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".statusYamba" >
 
-    <item android:id="@+id/refresh"
-        android:title="Refresh"
-        android:icon="@android:drawable/ic_menu_rotate"
-        android:showAsAction="always" />
 
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
