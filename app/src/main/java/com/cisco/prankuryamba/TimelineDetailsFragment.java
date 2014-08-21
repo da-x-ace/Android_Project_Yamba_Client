@@ -62,8 +62,7 @@ public class TimelineDetailsFragment extends Fragment {
 
         textViewMessage.setText(cursor.getString(cursor.getColumnIndex(MESSAGE)));
         Long time = cursor.getLong(cursor.getColumnIndex(TIME_CREATED));
-        CharSequence friendlyTime = DateUtils.getRelativeTimeSpanString(time,
-                                    System.currentTimeMillis(), 0);
+        CharSequence friendlyTime = DateUtils.getRelativeTimeSpanString(getActivity(), time);
         textViewTime.setText(friendlyTime);
     }
 }

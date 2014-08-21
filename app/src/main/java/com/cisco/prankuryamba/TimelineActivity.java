@@ -1,5 +1,6 @@
 package com.cisco.prankuryamba;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -23,16 +24,55 @@ public class TimelineActivity extends BaseYambaActivity implements TimelineFragm
         Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.fragment_container, new TimelineFragment(), "timeline");
+
+        //Not needed when used with tabs, because it will result in 2
+        //Copies of layout on each other.
+        //FragmentTransaction ft = getFragmentManager().beginTransaction();
+        //ft.replace(R.id.fragment_container, new TimelineFragment(), "timeline");
         View fragmentDetails = findViewById(R.id.fragment_details);
         if (fragmentDetails != null){
             detailsFragment = new TimelineDetailsFragment();
+            //Comment it when used without tabs
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            //Comment it when used without tabs
             ft.replace(R.id.fragment_details, detailsFragment);
+            ft.commit();
         }
-        ft.commit();
+        //Comment when used with tabs
+        //ft.commit();
+
+        //Example to show values can be passes through intents
+        if(getIntent().getBooleanExtra("fromNotification", false)) {
+            Log.d(TAG, "From Notification");
+        }
+
+        ActionBar actionBar = getActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        actionBar.setDisplayShowTitleEnabled(false);
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ActionBar actionBar = getActionBar();
+        ActionBar.Tab tab = actionBar.newTab();
+        tab.setText("Timeline");
+        tab.setTabListener(new TabListener<TimelineFragment>(this, "timeline", TimelineFragment.class));
+        actionBar.addTab(tab);
+
+        tab = actionBar.newTab();
+        tab.setText("Status");
+        tab.setTabListener(new TabListener<StatusFragment>(this, "status", StatusFragment.class));
+        actionBar.addTab(tab);
+    }
+
+    @Override
+    protected void onPause() {
+        getActionBar().removeAllTabs();
+        super.onPause();
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
