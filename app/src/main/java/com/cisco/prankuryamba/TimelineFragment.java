@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
@@ -39,6 +40,12 @@ public class TimelineFragment extends ListFragment implements LoaderManager.Load
             R.id.textViewMessage,
             R.id.textViewTime
     };
+
+    //Inorder for activity to decide what to do with this piece of fragment
+    public static interface TimelineItemSelectionCallback{
+        public void onTimelineItemSelected(long id);
+    }
+
     private static final String TAG = "prankgup.yamba." + TimelineFragment.class.getSimpleName();
     private SimpleCursorAdapter adapter;
     private SimpleCursorAdapter.ViewBinder rowViewBinder = new SimpleCursorAdapter.ViewBinder() {
@@ -125,5 +132,15 @@ public class TimelineFragment extends ListFragment implements LoaderManager.Load
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        if (getActivity() instanceof TimelineItemSelectionCallback){
+            TimelineItemSelectionCallback callback = (TimelineItemSelectionCallback) getActivity();
+            callback.onTimelineItemSelected(id);
+        }
+        super.onListItemClick(l, v, position, id);
     }
 }

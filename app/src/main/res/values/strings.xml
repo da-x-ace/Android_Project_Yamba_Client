@@ -8,5 +8,6 @@
     <string name="yamba_settings">yamba_settings</string>
     <string name="title_activity_timeline">TimelineActivity</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="Time">Time</string>
 
 </resources>

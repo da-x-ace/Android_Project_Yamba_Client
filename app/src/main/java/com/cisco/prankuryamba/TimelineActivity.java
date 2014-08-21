@@ -8,12 +8,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
 import com.cisco.prankuryamba.R;
 
-public class TimelineActivity extends BaseYambaActivity {
+public class TimelineActivity extends BaseYambaActivity implements TimelineFragment.TimelineItemSelectionCallback{
 
 
     private static final String TAG = "prankgup.yamba." + TimelineActivity.class.getSimpleName();
+    private TimelineDetailsFragment detailsFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
@@ -21,6 +25,11 @@ public class TimelineActivity extends BaseYambaActivity {
         setContentView(R.layout.activity_timeline);
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.fragment_container, new TimelineFragment(), "timeline");
+        View fragmentDetails = findViewById(R.id.fragment_details);
+        if (fragmentDetails != null){
+            detailsFragment = new TimelineDetailsFragment();
+            ft.replace(R.id.fragment_details, detailsFragment);
+        }
         ft.commit();
     }
 
@@ -45,5 +54,20 @@ public class TimelineActivity extends BaseYambaActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onTimelineItemSelected(long id) {
+        if(detailsFragment == null){
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            TimelineDetailsFragment detailsFragment = new TimelineDetailsFragment();
+            detailsFragment.setRowId(id);
+            ft.replace(R.id.fragment_container, detailsFragment);
+            ft.addToBackStack("TimelineDeatils "+ id);
+            ft.commit();
+        } else {
+            detailsFragment.update(id);
+        }
+
     }
 }
