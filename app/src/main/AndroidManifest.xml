@@ -3,6 +3,7 @@
     package="com.cisco.prankuryamba" >
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:name=".YambaApp"
         android:allowBackup="true"
@@ -12,12 +13,14 @@
         <activity
             android:name=".statusYamba"
             android:label="@string/app_name" >
+
             <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
         <activity
             android:name=".SettingsActivity"
@@ -57,6 +60,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <receiver android:name=".Yamba" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/yamba_info" />
+        </receiver>
     </application>
 
 </manifest>
