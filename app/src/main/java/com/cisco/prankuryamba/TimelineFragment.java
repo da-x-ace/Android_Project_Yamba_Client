@@ -10,6 +10,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Handler;
 import android.provider.Settings;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -40,6 +41,7 @@ public class TimelineFragment extends ListFragment implements LoaderManager.Load
             R.id.textViewMessage,
             R.id.textViewTime
     };
+    private Handler handler;
 
     //Inorder for activity to decide what to do with this piece of fragment
     public static interface TimelineItemSelectionCallback{
@@ -70,8 +72,24 @@ public class TimelineFragment extends ListFragment implements LoaderManager.Load
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        handler = new Handler();
         //If you don't mention it The OptionsMenu wont be displayed
         setHasOptionsMenu(true);
+        setRetainInstance(true);
+    }
+
+    private Runnable refresh = new Runnable() {
+        @Override
+        public void run() {
+            adapter.notifyDataSetChanged();
+            handler.postDelayed(refresh, 5000);
+        }
+    };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        handler.postDelayed(refresh,5000);
     }
 
     @Override

@@ -52,12 +52,23 @@ public class postMessageService extends IntentService {
         } else {
             notificationManager.cancel(NOTIFICATION_PASSWORD_ERROR);
             try {
-                client.postStatus(message);
+                Double lat = null;
+                Double lon = null;
+                if (intent.hasExtra("lat") && intent.hasExtra("lon")){
+                    lat = intent.getDoubleExtra("lat", 0);
+                    lon = intent.getDoubleExtra("lon", 0);
+                }
+                if(lat != null && lon != null){
+                    client.postStatus(message, lat, lon);
+                } else {
+                    client.postStatus(message);
+                }
                 Notification.Builder notification = new Notification.Builder(this);
                 notification.setSmallIcon(R.drawable.ic_launcher);
                 notification.setContentTitle("Yamba");
                 notification.setContentText("Posted " + message);
                 Intent pIntent = new Intent(this, TimelineActivity.class);
+                pIntent.putExtra("fromNotification", true);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, pIntent,
                                               PendingIntent.FLAG_UPDATE_CURRENT);
                 notification.setContentIntent(pendingIntent);
